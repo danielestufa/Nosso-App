@@ -6,6 +6,8 @@ import { useAviso } from '../components/Aviso'
 import { statusPush, enviarNotificacao } from '../lib/push'
 import { hojeLocal, lerDataISO, diasEntre, mesesEDias, dataPorExtenso, saudacao } from '../lib/datas'
 import { IconeSino, IconeSeta } from '../components/Icones'
+import Barra from '../components/Barra'
+import { carregarDia, carregarMetas, resumir, dataISO, num, ouvirSaude } from '../lib/saude'
 
 const DATA_PADRAO = '2027-09-09'
 
@@ -15,8 +17,6 @@ const lembretes = [
   { id: 'leitura', rotulo: 'Hora da leitura', corpo: 'Que tal ler umas páginas agora?', url: '/leitura' },
   { id: 'carinho', rotulo: 'Mandar um carinho', corpo: 'Tô pensando em você.', url: '/' },
 ]
-
-const indicadores = ['Água', 'Calorias', 'Treino', 'Leitura']
 
 function Contagem({ dataISO }) {
   const hoje = hojeLocal()
@@ -55,23 +55,57 @@ function Contagem({ dataISO }) {
   )
 }
 
-function ResumoPessoa({ nome, pendente }) {
-  return (
-    <div className="resumo-pessoa">
-      <p className="resumo-nome">{nome}</p>
-      {pendente ? (
+function ResumoPessoa({ pessoa, ehEu, pendente, versao }) {
+  const [info, setInfo] = useState(null)
+
+  useEffect(() => {
+    if (pendente) return
+    const hoje = dataISO()
+    Promise.all([carregarDia(pessoa.id, hoje), carregarMetas(pessoa.id)]).then(([dia, metas]) =>
+      setInfo({ r: resumir(dia), metas })
+    )
+  }, [pessoa?.id, pendente, versao])
+
+  if (pendente) {
+    return (
+      <div className="resumo-pessoa">
+        <p className="resumo-nome">Seu par</p>
         <p className="suave pequeno">Ainda não entrou no app.</p>
-      ) : (
-        <ul className="indicadores">
-          {indicadores.map((i) => (
-            <li key={i}>
-              <span>{i}</span>
-              <span className="indicador-valor">em breve</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+      </div>
+    )
+  }
+
+  const destino = ehEu ? '/saude' : '/saude?quem=par'
+
+  return (
+    <Link to={destino} className="resumo-pessoa resumo-pessoa-link">
+      <p className="resumo-nome">{pessoa.nome}</p>
+      <ul className="indicadores">
+        <li>
+          <span>Água</span>
+          <span className="indicador-valor forte">
+            {info ? `${num(info.r.aguaMl / 1000, 1)} / ${num(info.metas.agua_ml / 1000, 1)} L` : '...'}
+          </span>
+        </li>
+        {info && <li className="indicador-barra"><Barra valor={info.r.aguaMl} meta={info.metas.agua_ml} fina /></li>}
+        <li>
+          <span>Calorias</span>
+          <span className="indicador-valor forte">{info ? `${num(info.r.kcal)} / ${num(info.metas.calorias)}` : '...'}</span>
+        </li>
+        <li>
+          <span>Açúcar</span>
+          <span className="indicador-valor forte">{info ? (info.r.comeuAcucar ? 'Comeu' : 'Sem açúcar') : '...'}</span>
+        </li>
+        <li>
+          <span>Treino</span>
+          <span className="indicador-valor">em breve</span>
+        </li>
+        <li>
+          <span>Leitura</span>
+          <span className="indicador-valor">em breve</span>
+        </li>
+      </ul>
+    </Link>
   )
 }
 
@@ -81,6 +115,10 @@ export default function Inicio() {
   const [dataCasamento, setDataCasamento] = useState(DATA_PADRAO)
   const [push, setPush] = useState(null)
   const [enviando, setEnviando] = useState(null)
+  const [versao, setVersao] = useState(0)
+
+  // Atualiza o resumo quando qualquer um registra algo
+  useEffect(() => ouvirSaude('inicio', () => setVersao((v) => v + 1)), [])
 
   useEffect(() => {
     supabase
@@ -139,8 +177,8 @@ export default function Inicio() {
       <section className="bloco">
         <h2 className="titulo-bloco">Hoje</h2>
         <div className="resumo-dupla">
-          <ResumoPessoa nome={perfil.nome} />
-          <ResumoPessoa nome={parceiro?.nome || 'Seu par'} pendente={!parceiro?.nome} />
+          <ResumoPessoa pessoa={perfil} ehEu versao={versao} />
+          <ResumoPessoa pessoa={parceiro} pendente={!parceiro?.nome} versao={versao} />
         </div>
       </section>
 

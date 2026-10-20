@@ -8,6 +8,7 @@ import BoasVindas from './pages/BoasVindas'
 import Inicio from './pages/Inicio'
 import Ajustes from './pages/Ajustes'
 import EmBreve from './pages/EmBreve'
+import Saude from './pages/saude/Saude'
 import ConfiguracaoPendente from './pages/ConfiguracaoPendente'
 
 function Carregando() {
@@ -32,8 +33,9 @@ export default function App() {
       <Route element={<Layout />}>
         <Route index element={<Inicio />} />
         <Route path="ajustes" element={<Ajustes />} />
+        <Route path="saude" element={<Saude />} />
         {secoes
-          .filter((s) => s.fase)
+          .filter((s) => s.fase && !s.pronta)
           .map((s) => (
             <Route key={s.rota} path={s.rota.slice(1)} element={<EmBreve secao={s} />} />
           ))}

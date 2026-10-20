@@ -6,7 +6,7 @@ import {
 export const secoes = [
   { rota: '/', nome: 'Início', Icone: IconeInicio },
   {
-    rota: '/saude', nome: 'Saúde', Icone: IconeSaude, fase: 2,
+    rota: '/saude', nome: 'Saúde', Icone: IconeSaude, fase: 2, pronta: true,
     resumo: 'Água, alimentação por refeição, calorias e macros, açúcar, sono, passos, medidas e fotos de evolução.',
   },
   {
