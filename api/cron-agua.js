@@ -1,8 +1,9 @@
 import { admin, enviarPush } from './_lib/servidor.js'
 
 // Chamado de hora em hora pelo agendamento do Supabase (pg_cron).
-// Entre 9h e 21h, se alguém passou do limite de horas sem registrar água,
-// avisa a própria pessoa e o par.
+// 1) Entre 9h e 21h, se alguém passou do limite de horas sem registrar água,
+//    avisa a própria pessoa e o par.
+// 2) No horário de treino escolhido por cada um, avisa nos dias com treino na ficha.
 const FUSO_HORAS = -3 // horário de Brasília
 
 function agoraBrasilia() {
@@ -17,10 +18,11 @@ export default async function handler(req, res) {
   try {
     const br = agoraBrasilia()
     const hora = br.getUTCHours()
-    if (hora < 9 || hora > 21) return res.status(200).json({ pulado: 'fora do horário' })
-
     const hoje = br.toISOString().slice(0, 10)
     const db = admin()
+
+    const treinos = await lembrarTreinos(db, hora, hoje, br.getUTCDay())
+    if (hora < 9 || hora > 21) return res.status(200).json({ treinos, agua: 'fora do horário' })
 
     const { data: perfis } = await db.from('profiles').select('id, nome')
     const { data: metas } = await db.from('metas_saude').select('user_id, agua_ml, lembrete_agua_horas')
@@ -85,9 +87,45 @@ export default async function handler(req, res) {
       resultado.push({ pessoa: pessoa.nome, horasSem: h })
     }
 
-    return res.status(200).json({ avisados: resultado })
+    return res.status(200).json({ treinos, agua: resultado })
   } catch (e) {
     console.error(e)
     return res.status(500).json({ erro: e.message })
   }
+}
+
+async function lembrarTreinos(db, hora, hoje, diaSemana) {
+  const { data: configs } = await db.from('config_treino').select('user_id, lembrete_hora').eq('lembrete_hora', hora)
+  const avisados = []
+  for (const c of configs || []) {
+    const { data: dia } = await db
+      .from('ficha_dias')
+      .select('titulo, ficha_itens(id)')
+      .eq('user_id', c.user_id)
+      .eq('dia_semana', diaSemana)
+      .maybeSingle()
+    if (!dia?.ficha_itens?.length) continue
+
+    const { data: feito } = await db.from('treinos_realizados').select('id').eq('user_id', c.user_id).eq('data', hoje).maybeSingle()
+    if (feito) continue
+
+    const { data: jaAvisou } = await db
+      .from('alertas_enviados')
+      .select('id')
+      .eq('user_id', c.user_id)
+      .eq('tipo', 'treino')
+      .gte('enviado_em', `${hoje}T00:00:00-03:00`)
+      .limit(1)
+    if (jaAvisou?.length) continue
+
+    await enviarPush([c.user_id], {
+      titulo: 'Hora do treino',
+      corpo: `Hoje é dia de ${dia.titulo.toLowerCase()}. Bora?`,
+      url: '/treinos',
+      tag: 'lembrete-treino',
+    })
+    await db.from('alertas_enviados').insert({ user_id: c.user_id, tipo: 'treino' })
+    avisados.push(c.user_id)
+  }
+  return avisados
 }

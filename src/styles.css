@@ -1498,3 +1498,492 @@ a {
 .resumo-pessoa-link { display: block; transition: border-color 0.15s; }
 .resumo-pessoa-link:hover { border-color: var(--linha-forte); }
 .indicadores li.indicador-barra { border-top: none; padding: 0 0 4px; display: block; }
+
+/* =========================================================
+   FASE 3 · TREINOS
+   ========================================================= */
+
+.treinos,
+.treino-hoje,
+.ficha,
+.juntos,
+.evolucao {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.titulo-secao {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.mini-texto { font-size: 11px; }
+
+.texto-cortado {
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.link {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-size: inherit;
+}
+
+.selo-cheio {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  border-color: var(--inverso-fundo);
+}
+
+.campo textarea {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--linha);
+  background: var(--superficie-2);
+  font-size: 16px;
+  resize: vertical;
+  outline: none;
+}
+
+.campo textarea:focus { border-color: var(--linha-forte); }
+
+/* Imagem do exercício (duas fotos alternando) */
+.img-exercicio {
+  position: relative;
+  overflow: hidden;
+  background: var(--superficie-2);
+  flex-shrink: 0;
+}
+
+.img-exercicio img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.05);
+  transition: opacity 0.25s ease;
+}
+
+.img-exercicio-mini {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+}
+
+.img-exercicio-grande {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 14px;
+}
+
+.img-vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--suave);
+}
+
+/* Dia de descanso */
+.descanso {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+/* Cabeçalho do treino */
+.treino-cabecalho { gap: 8px; }
+
+/* Cartões de exercício */
+.lista-exercicios { display: flex; flex-direction: column; gap: 8px; }
+
+.exercicio-cartao {
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+  background: var(--superficie);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.exercicio-cartao.aberto { border-color: var(--linha-forte); }
+.exercicio-cartao.completo:not(.aberto) .exercicio-texto strong { text-decoration: line-through; color: var(--suave); }
+
+.exercicio-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px 10px 10px;
+  text-align: left;
+}
+
+.exercicio-texto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.exercicio-texto strong { font-weight: 600; font-size: 15px; line-height: 1.3; }
+
+.contagem-series {
+  min-width: 40px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--linha);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.contagem-series.feito {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  border-color: var(--inverso-fundo);
+}
+
+.exercicio-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 14px 14px;
+}
+
+.como-fazer { color: var(--suave); line-height: 1.55; }
+
+.observacao {
+  border-left: 2px solid var(--linha-forte);
+  padding-left: 10px;
+}
+
+.tabela-series { display: flex; flex-direction: column; gap: 6px; }
+
+.series-cabecalho,
+.serie-linha {
+  display: grid;
+  grid-template-columns: 36px 1fr 1fr 48px;
+  gap: 8px;
+  align-items: center;
+}
+
+.series-cabecalho span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--suave);
+}
+
+.serie-numero {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  text-align: center;
+  color: var(--suave);
+}
+
+.serie-linha input {
+  height: 44px;
+  width: 100%;
+  min-width: 0;
+  border-radius: 10px;
+  border: 1px solid var(--linha);
+  background: var(--superficie-2);
+  text-align: center;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 17px;
+  outline: none;
+}
+
+.serie-linha input:focus { border-color: var(--linha-forte); }
+.serie-linha input:disabled { opacity: 1; color: var(--texto); }
+.serie-linha.feita input { background: transparent; border-color: transparent; }
+
+.check-serie {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1.5px solid var(--linha-forte);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+}
+
+.check-serie.feita {
+  background: var(--inverso-fundo);
+  border-color: var(--inverso-fundo);
+  color: var(--inverso-texto);
+}
+
+.check-serie:disabled { opacity: 0.4; }
+.check-serie.feita:disabled { opacity: 1; }
+
+/* Cronômetro de descanso */
+.cronometro {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(76px + env(safe-area-inset-bottom));
+  z-index: 40;
+  border-radius: 16px;
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+  animation: subir 0.2s ease;
+}
+
+.cronometro-progresso {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: color-mix(in srgb, var(--inverso-texto) 14%, transparent);
+  transition: width 0.25s linear;
+}
+
+.cronometro-conteudo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 10px 16px;
+}
+
+.cronometro-conteudo > div:first-child { display: flex; flex-direction: column; }
+
+.cronometro strong {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.cronometro .botao {
+  border-color: var(--inverso-texto);
+  color: var(--inverso-texto);
+}
+
+.cronometro .botao:hover:not(:disabled) { background: transparent; opacity: 0.8; }
+.cronometro-fim { animation: piscar 0.5s ease 3; }
+
+@keyframes piscar {
+  50% { opacity: 0.6; }
+}
+
+@media (min-width: 900px) {
+  .cronometro {
+    left: auto;
+    right: 32px;
+    bottom: 32px;
+    width: 360px;
+  }
+}
+
+/* Ficha */
+.dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dia-botao {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--linha);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--suave);
+  position: relative;
+}
+
+.dia-botao.tem-treino { color: var(--texto); }
+
+.dia-botao.tem-treino::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.dia-botao.ativo {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  border-color: var(--inverso-fundo);
+}
+
+.itens-ficha {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.itens-ficha li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--linha);
+}
+
+.acoes-item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.acoes-item .botao-icone { width: 30px; height: 30px; font-size: 15px; }
+.acoes-item .botao-icone:disabled { opacity: 0.2; }
+
+@media (max-width: 480px) {
+  .itens-ficha li { flex-wrap: wrap; }
+  .acoes-item { width: 100%; justify-content: flex-end; margin-top: -4px; }
+}
+
+/* Biblioteca */
+.chips-rolagem {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.chips-rolagem::-webkit-scrollbar { display: none; }
+.chips-rolagem .chip { flex-shrink: 0; }
+
+.lista-exercicios-escolher { display: flex; flex-direction: column; }
+
+.exercicio-opcao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--linha);
+  text-align: left;
+  width: 100%;
+}
+
+.exercicio-opcao:hover { background: var(--superficie-2); }
+.exercicio-opcao > svg { color: var(--suave); flex-shrink: 0; }
+
+/* Juntos */
+.juntos-titulos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-left: 28px;
+}
+
+.pares { display: flex; flex-direction: column; gap: 6px; }
+
+.par {
+  display: grid;
+  grid-template-columns: 20px 1fr 1fr;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+  padding: 8px 0;
+  border-top: 1px solid var(--linha);
+}
+
+.par-numero {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--suave);
+}
+
+.par-celula {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.par-celula .img-exercicio-mini { width: 40px; height: 40px; border-radius: 8px; }
+.par-celula strong { font-weight: 500; line-height: 1.25; }
+
+.par-vazia {
+  height: 40px;
+  border: 1px dashed var(--linha);
+  border-radius: 8px;
+  justify-content: center;
+}
+
+.par-area {
+  grid-column: 2 / -1;
+  justify-self: center;
+  margin-top: -2px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--superficie-2);
+  color: var(--suave);
+}
+
+.par-separado { opacity: 0.75; }
+
+/* Evolução */
+.calendario {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendario-cab {
+  font-size: 11px;
+  text-align: center;
+  color: var(--suave);
+}
+
+.calendario-dia {
+  aspect-ratio: 1;
+  max-height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  background: var(--superficie-2);
+  color: var(--suave);
+}
+
+.calendario-dia.feito {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+}
+
+.calendario-dia.iniciado {
+  background: transparent;
+  border: 1.5px solid var(--linha-forte);
+  color: var(--texto);
+}
+
+.calendario-dia.hoje { outline: 1.5px solid var(--linha-forte); outline-offset: 2px; }
+
+.historico-series { list-style: none; }
+
+.historico-series li {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--linha);
+}
+
+.par-celula .exercicio-texto strong { overflow-wrap: anywhere; hyphens: auto; }

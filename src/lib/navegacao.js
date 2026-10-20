@@ -10,7 +10,7 @@ export const secoes = [
     resumo: 'Água, alimentação por refeição, calorias e macros, açúcar, sono, passos, medidas e fotos de evolução.',
   },
   {
-    rota: '/treinos', nome: 'Treinos', Icone: IconeTreino, fase: 3,
+    rota: '/treinos', nome: 'Treinos', Icone: IconeTreino, fase: 3, pronta: true,
     resumo: 'As fichas de cada um, carga com histórico, gráficos de evolução e os treinos lado a lado.',
   },
   {

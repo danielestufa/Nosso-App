@@ -9,6 +9,7 @@ import Inicio from './pages/Inicio'
 import Ajustes from './pages/Ajustes'
 import EmBreve from './pages/EmBreve'
 import Saude from './pages/saude/Saude'
+import Treinos from './pages/treinos/Treinos'
 import ConfiguracaoPendente from './pages/ConfiguracaoPendente'
 
 function Carregando() {
@@ -34,6 +35,7 @@ export default function App() {
         <Route index element={<Inicio />} />
         <Route path="ajustes" element={<Ajustes />} />
         <Route path="saude" element={<Saude />} />
+        <Route path="treinos" element={<Treinos />} />
         {secoes
           .filter((s) => s.fase && !s.pronta)
           .map((s) => (

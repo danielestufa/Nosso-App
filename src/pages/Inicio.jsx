@@ -8,6 +8,7 @@ import { hojeLocal, lerDataISO, diasEntre, mesesEDias, dataPorExtenso, saudacao 
 import { IconeSino, IconeSeta } from '../components/Icones'
 import Barra from '../components/Barra'
 import { carregarDia, carregarMetas, resumir, dataISO, num, ouvirSaude } from '../lib/saude'
+import { carregarFicha, carregarTreinoDoDia, diaSemanaDe, ouvirTreinos } from '../lib/treinos'
 
 const DATA_PADRAO = '2027-09-09'
 
@@ -61,9 +62,16 @@ function ResumoPessoa({ pessoa, ehEu, pendente, versao }) {
   useEffect(() => {
     if (pendente) return
     const hoje = dataISO()
-    Promise.all([carregarDia(pessoa.id, hoje), carregarMetas(pessoa.id)]).then(([dia, metas]) =>
-      setInfo({ r: resumir(dia), metas })
-    )
+    Promise.all([carregarDia(pessoa.id, hoje), carregarMetas(pessoa.id), carregarFicha(pessoa.id), carregarTreinoDoDia(pessoa.id, hoje)])
+      .then(([dia, metas, ficha, treino]) => {
+        const doDia = ficha[diaSemanaDe(hoje)]
+        let textoTreino = 'Descanso'
+        if (treino.treino?.concluido_em) textoTreino = 'Feito'
+        else if (treino.treino) textoTreino = 'Treinando'
+        else if (doDia?.itens?.length) textoTreino = doDia.titulo
+        setInfo({ r: resumir(dia), metas, treino: textoTreino })
+      })
+      .catch(() => {})
   }, [pessoa?.id, pendente, versao])
 
   if (pendente) {
@@ -98,7 +106,7 @@ function ResumoPessoa({ pessoa, ehEu, pendente, versao }) {
         </li>
         <li>
           <span>Treino</span>
-          <span className="indicador-valor">em breve</span>
+          <span className="indicador-valor forte texto-cortado">{info ? info.treino : '...'}</span>
         </li>
         <li>
           <span>Leitura</span>
@@ -119,6 +127,7 @@ export default function Inicio() {
 
   // Atualiza o resumo quando qualquer um registra algo
   useEffect(() => ouvirSaude('inicio', () => setVersao((v) => v + 1)), [])
+  useEffect(() => ouvirTreinos('inicio', () => setVersao((v) => v + 1), ['treinos_realizados']), [])
 
   useEffect(() => {
     supabase
