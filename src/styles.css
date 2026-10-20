@@ -1987,3 +1987,282 @@ a {
 }
 
 .par-celula .exercicio-texto strong { overflow-wrap: anywhere; hyphens: auto; }
+
+/* =========================================================
+   FASE 4 · DESAFIOS
+   ========================================================= */
+
+.desafios,
+.detalhe-desafio,
+.form-desafio,
+.modelos,
+.checkin,
+.bloco-desafios {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.desafios { gap: 20px; }
+.bloco-desafios { gap: 10px; }
+.checkin { gap: 10px; }
+
+.placar-geral {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--linha);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.placar-geral-pessoa {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px;
+}
+
+.placar-geral-pessoa + .placar-geral-pessoa { border-left: 1px solid var(--linha); }
+.placar-geral .numero-grande { margin-top: 2px; font-size: 34px; }
+
+.convite {
+  border-color: var(--linha-forte);
+  border-width: 1.5px;
+}
+
+.confirmar-recusa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--superficie-2);
+}
+
+.regras-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.regras-lista li {
+  display: flex;
+  flex-direction: column;
+  padding: 7px 0;
+  border-top: 1px solid var(--linha);
+}
+
+.regras-lista li:first-child { border-top: none; }
+
+.grade-desafios {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 900px) {
+  .grade-desafios { grid-template-columns: 1fr 1fr; }
+}
+
+.cartao-desafio {
+  text-align: left;
+  gap: 10px;
+  transition: border-color 0.15s;
+}
+
+.cartao-desafio:hover { border-color: var(--linha-forte); }
+
+.mini-placar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.mini-pessoa {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--superficie-2);
+}
+
+.mini-pessoa.vencedor {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+}
+
+.mini-pessoa.vencedor .vida { border-color: var(--inverso-texto); }
+.mini-pessoa.vencedor .vida.cheia { background: var(--inverso-texto); }
+
+.mini-pontos {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 18px;
+}
+
+.vidas { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+
+.vida {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--linha-forte);
+}
+
+.vida.cheia { background: var(--linha-forte); }
+
+/* Check-in */
+.check-texto {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.check-caixa.cheia {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+}
+
+.check.feito-check .check-texto > span:first-child { text-decoration: none; }
+
+.dia-pendente { border-top: 1px solid var(--linha); }
+
+.dia-pendente-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 0;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.dia-pendente .checkin { padding-bottom: 14px; }
+
+/* Detalhe */
+.resultado {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  border-radius: 20px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.resultado .rotulo { color: var(--inverso-suave); }
+
+.placar-desafio {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .placar-desafio { grid-template-columns: 1fr 1fr; }
+}
+
+.placar-pessoa.vencedor { border-color: var(--linha-forte); border-width: 1.5px; }
+
+.calendario-desafio {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14px, 1fr));
+  gap: 4px;
+}
+
+.dia-desafio {
+  display: inline-block;
+  aspect-ratio: 1;
+  min-width: 12px;
+  border-radius: 4px;
+  background: var(--superficie-2);
+  border: 1px solid var(--linha);
+}
+
+.dia-desafio.cumpriu { background: var(--linha-forte); border-color: var(--linha-forte); }
+
+.dia-desafio.falhou {
+  background: repeating-linear-gradient(-45deg, var(--linha-forte) 0 1.5px, transparent 1.5px 4px);
+  border-color: var(--linha-forte);
+}
+
+.dia-desafio.pendente,
+.dia-desafio.hoje { border: 1.5px dashed var(--linha-forte); background: transparent; }
+.dia-desafio.livre { opacity: 0.4; }
+.dia-desafio.fora { opacity: 0.15; }
+
+.legenda-calendario {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.legenda-calendario .dia-desafio { width: 12px; height: 12px; margin-right: -4px; }
+
+/* Novo desafio */
+.modelo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid var(--linha);
+  border-radius: 14px;
+  text-align: left;
+  transition: border-color 0.15s;
+}
+
+.modelo:hover { border-color: var(--linha-forte); }
+
+.regra-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--linha);
+  border-radius: 14px;
+}
+
+.dias-regra { display: flex; flex-direction: column; gap: 8px; }
+.dias-letras { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+
+.dia-letra {
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid var(--linha);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--suave);
+}
+
+.dia-letra.ativo {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  border-color: var(--inverso-fundo);
+}
+
+.vazio-desafios {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+/* Início */
+.lista-desafios-inicio { display: flex; flex-direction: column; gap: 8px; }
+
+.desafio-inicio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--linha);
+  border-radius: 14px;
+  transition: border-color 0.15s;
+}
+
+.desafio-inicio:hover { border-color: var(--linha-forte); }
+
+.check .check-texto .suave { margin-left: 0; }
+.check-texto { text-align: left; }
+.dia-pendente-topo { text-transform: none; }
+.dia-pendente-topo > span:first-child::first-letter { text-transform: uppercase; }

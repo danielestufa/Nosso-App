@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
     const resultado = await enviarPush(ids, {
       titulo: 'Como foi o seu dia?',
-      corpo: 'Atualize água, alimentação, treino e desafios de hoje.',
+      corpo: 'Atualize água, alimentação e treino, e confirme seus desafios de hoje.',
       url: '/',
       tag: 'como-foi-o-dia',
     })

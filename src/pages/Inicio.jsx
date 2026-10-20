@@ -9,6 +9,8 @@ import { IconeSino, IconeSeta } from '../components/Icones'
 import Barra from '../components/Barra'
 import { carregarDia, carregarMetas, resumir, dataISO, num, ouvirSaude } from '../lib/saude'
 import { carregarFicha, carregarTreinoDoDia, diaSemanaDe, ouvirTreinos } from '../lib/treinos'
+import { carregarDesafios, estadoGeral, regrasDoDia, ouvirDesafios } from '../lib/desafios'
+import { Vidas } from './desafios/DetalheDesafio'
 
 const DATA_PADRAO = '2027-09-09'
 
@@ -128,6 +130,13 @@ export default function Inicio() {
   // Atualiza o resumo quando qualquer um registra algo
   useEffect(() => ouvirSaude('inicio', () => setVersao((v) => v + 1)), [])
   useEffect(() => ouvirTreinos('inicio', () => setVersao((v) => v + 1), ['treinos_realizados']), [])
+  useEffect(() => ouvirDesafios('inicio', () => setVersao((v) => v + 1)), [])
+
+  const [desafios, setDesafios] = useState([])
+  useEffect(() => {
+    if (!parceiro?.nome) return
+    carregarDesafios().then(setDesafios).catch(() => {})
+  }, [parceiro?.nome, versao])
 
   useEffect(() => {
     supabase
@@ -190,6 +199,46 @@ export default function Inicio() {
           <ResumoPessoa pessoa={parceiro} pendente={!parceiro?.nome} versao={versao} />
         </div>
       </section>
+
+      {(() => {
+        const perfis = [perfil, parceiro].filter((p) => p?.nome)
+        const hoje = dataISO()
+        const convites = desafios.filter((d) => d.status === 'pendente' && d.criado_por !== perfil.id)
+        const ativos = desafios
+          .filter((d) => d.status === 'ativo')
+          .map((d) => ({ d, g: estadoGeral(d, perfis) }))
+          .filter((x) => x.g.fase === 'andamento')
+        if (!convites.length && !ativos.length) return null
+        return (
+          <section className="bloco">
+            <h2 className="titulo-bloco">Desafios</h2>
+            {convites.length > 0 && (
+              <Link to="/desafios" className="faixa">
+                <span>{parceiro.nome} te mandou {convites.length === 1 ? 'um desafio' : `${convites.length} desafios`}. Toque para responder.</span>
+                <IconeSeta tamanho={16} />
+              </Link>
+            )}
+            <div className="lista-desafios-inicio">
+              {ativos.map(({ d, g }) => {
+                const minha = g.sit[perfil.id]
+                const falta = minha && d.modo === 'diario' && !minha.eliminado &&
+                  regrasDoDia(d.regras, hoje).length > 0 && !d.checkins.some((c) => c.user_id === perfil.id && c.data === hoje)
+                return (
+                  <Link key={d.id} to={`/desafios?id=${d.id}`} className="desafio-inicio">
+                    <div className="exercicio-texto">
+                      <strong className="pequeno">{d.titulo}</strong>
+                      <span className="suave mini-texto">
+                        {g.pessoas.map((p) => `${p.nome} ${d.modo === 'diario' ? `${g.sit[p.id].pontos} pts` : ''}`).join(' · ')}
+                      </span>
+                    </div>
+                    {falta ? <span className="selo">Confirmar hoje</span> : minha && d.modo === 'diario' ? <Vidas total={d.vidas} restantes={minha.vidasRestantes} /> : null}
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )
+      })()}
 
       {parceiro?.nome && (
         <section className="bloco">

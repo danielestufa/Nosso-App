@@ -14,7 +14,7 @@ export const secoes = [
     resumo: 'As fichas de cada um, carga com histórico, gráficos de evolução e os treinos lado a lado.',
   },
   {
-    rota: '/desafios', nome: 'Desafios', Icone: IconeDesafio, fase: 4,
+    rota: '/desafios', nome: 'Desafios', Icone: IconeDesafio, fase: 4, pronta: true,
     resumo: 'Desafios entre vocês e juntos, com vidas, ranking, aposta e prenda para quem recusar.',
   },
   {
