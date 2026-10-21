@@ -6,9 +6,11 @@ import { dataISO, somarDias, rotuloData } from '../../lib/saude'
 import Hoje from './Hoje'
 import Corpo from './Corpo'
 import Metas from './Metas'
+import Balanco from './Balanco'
 
 const ABAS = [
   ['dia', 'Dia'],
+  ['balanco', 'Balanço'],
   ['corpo', 'Corpo'],
   ['metas', 'Metas'],
 ]
@@ -74,6 +76,7 @@ export default function Saude() {
         </>
       )}
 
+      {aba === 'balanco' && <Balanco key={pessoa.id} pessoa={pessoa} editavel={editavel} irParaMetas={() => mudar('aba', 'metas')} />}
       {aba === 'corpo' && <Corpo key={pessoa.id} pessoa={pessoa} editavel={editavel} />}
       {aba === 'metas' && editavel && <Metas usuarioId={perfil.id} />}
     </div>

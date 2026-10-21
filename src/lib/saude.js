@@ -19,6 +19,8 @@ export const METAS_PADRAO = {
   passos: 8000,
   sono_horas: 8,
   lembrete_agua_horas: 3,
+  gasto_basal: null,
+  meta_gasto_exercicio: null,
 }
 
 // Sugere a refeição pelo horário atual
@@ -118,6 +120,7 @@ export function resumir(dados) {
     acucarDescricao: dados.dia?.acucar_descricao || '',
     sono: dados.dia?.sono_horas,
     passos: dados.dia?.passos,
+    exercicio: Number(dados.dia?.calorias_exercicio || 0),
   }
 }
 
@@ -168,4 +171,29 @@ export function ouvirSaude(nome, aoMudar, tabelas = ['registros_agua', 'refeicao
   }
   canal.subscribe()
   return () => supabase.removeChannel(canal)
+}
+
+// Referência: 1 kg de gordura corporal guarda cerca de 7.700 kcal
+export const KCAL_POR_KG = 7700
+
+// Calorias ingeridas e gastas em atividade, dia a dia, num período
+export async function carregarBalanco(userId, dataFim, dias) {
+  const inicio = somarDias(dataFim, -(dias - 1))
+  const [itens, diasSaude, medidas] = await Promise.all([
+    supabase.from('refeicao_itens').select('data, kcal').eq('user_id', userId).gte('data', inicio).lte('data', dataFim),
+    supabase.from('dia_saude').select('data, calorias_exercicio').eq('user_id', userId).gte('data', inicio).lte('data', dataFim),
+    supabase.from('medidas').select('data, peso_kg, criado_em').eq('user_id', userId).not('peso_kg', 'is', null).order('data').order('criado_em'),
+  ])
+  const lista = []
+  for (let i = 0; i < dias; i++) {
+    const d = somarDias(inicio, i)
+    const doDia = (itens.data || []).filter((x) => x.data === d)
+    lista.push({
+      data: d,
+      temComida: doDia.length > 0,
+      ingerido: doDia.reduce((t, x) => t + Number(x.kcal), 0),
+      exercicio: Number((diasSaude.data || []).find((x) => x.data === d)?.calorias_exercicio || 0),
+    })
+  }
+  return { dias: lista, pesos: medidas.data || [] }
 }

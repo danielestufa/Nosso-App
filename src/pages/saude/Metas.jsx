@@ -8,6 +8,8 @@ const CAMPOS = [
   ['agua_ml', 'Água por dia', 'ml'],
   ['copo_ml', 'Tamanho do seu copo', 'ml'],
   ['calorias', 'Calorias por dia', 'kcal'],
+  ['gasto_basal', 'Gasto natural do corpo (basal)', 'kcal por dia'],
+  ['meta_gasto_exercicio', 'Meta de gasto em atividade', 'kcal por dia'],
   ['proteina_g', 'Proteína', 'g'],
   ['carboidrato_g', 'Carboidrato', 'g'],
   ['gordura_g', 'Gordura', 'g'],
@@ -31,7 +33,7 @@ export default function Metas({ usuarioId }) {
   useEffect(() => {
     carregarMetas(usuarioId).then((m) => {
       const valores = {}
-      for (const [c] of CAMPOS) valores[c] = String(m[c] ?? METAS_PADRAO[c])
+      for (const [c] of CAMPOS) valores[c] = m[c] == null ? '' : String(m[c])
       setMetas(valores)
     })
     carregarSuplementos()
@@ -41,6 +43,10 @@ export default function Metas({ usuarioId }) {
     e.preventDefault()
     const final = {}
     for (const [c] of CAMPOS) {
+      if (metas[c] === '' && (c === 'gasto_basal' || c === 'meta_gasto_exercicio')) {
+        final[c] = null
+        continue
+      }
       const v = Number(String(metas[c]).replace(',', '.'))
       if (Number.isNaN(v) || v < 0) return avisar('Confira os valores digitados.')
       final[c] = c === 'sono_horas' ? v : Math.round(v)
@@ -91,6 +97,9 @@ export default function Metas({ usuarioId }) {
               />
             </label>
           ))}
+          <p className="suave pequeno campo-cheio">
+            Gasto natural: quanto o seu corpo gasta por dia sem treino (taxa metabólica basal ou o gasto total que você calculou). É usado no balanço de calorias.
+          </p>
           <p className="suave pequeno campo-cheio">
             Lembrete de água: das 9h às 21h, se passar esse tempo sem registrar, você e seu par recebem um aviso. Coloque 0 para desligar.
           </p>

@@ -8,7 +8,7 @@ import { enviarNotificacao } from '../../lib/push'
 import { IconeMaisSimples, IconeLixo, IconeGota, IconeLua, IconePassos, IconeCheck } from '../../components/Icones'
 import {
   REFEICOES, carregarDia, carregarMetas, carregarSemana, resumir, salvarDia, ouvirSaude,
-  refeicaoDoHorario, dataISO, num,
+  refeicaoDoHorario, dataISO, num, KCAL_POR_KG,
 } from '../../lib/saude'
 
 function hora(iso) {
@@ -74,6 +74,7 @@ export default function Hoje({ pessoa, eu, data, editavel }) {
   const [sono, setSono] = useState('')
   const [passos, setPassos] = useState('')
   const [descAcucar, setDescAcucar] = useState('')
+  const [exercicioNovo, setExercicioNovo] = useState('')
 
   const carregar = useCallback(async () => {
     const [d, m, s] = await Promise.all([carregarDia(pessoa.id, data), carregarMetas(pessoa.id), carregarSemana(pessoa.id, data)])
@@ -322,6 +323,63 @@ export default function Hoje({ pessoa, eu, data, editavel }) {
               </label>
             )}
           </>
+        )}
+      </section>
+
+      {/* Balanço de calorias */}
+      <section className="cartao balanco-dia">
+        <div className="cartao-topo">
+          <h3 className="cartao-titulo">Calorias gastas</h3>
+          {metas.meta_gasto_exercicio > 0 && <span className="suave pequeno">meta {num(metas.meta_gasto_exercicio)} kcal</span>}
+        </div>
+        {editavel && (
+          <form
+            className="linha-form"
+            onSubmit={(e) => {
+              e.preventDefault()
+              const v = Math.round(Number(String(exercicioNovo).replace(',', '.')))
+              if (!v || v <= 0) return
+              salvarCampoDia({ calorias_exercicio: r.exercicio + v })
+              setExercicioNovo('')
+              avisar(`+${v} kcal de atividade registradas.`)
+            }}
+          >
+            <label className="campo">
+              <span>Treino ou atividade (do relógio)</span>
+              <input inputMode="numeric" value={exercicioNovo} onChange={(e) => setExercicioNovo(e.target.value)} placeholder="kcal" />
+            </label>
+            <button className="botao botao-cheio">Somar</button>
+          </form>
+        )}
+        {metas.meta_gasto_exercicio > 0 && <Barra valor={r.exercicio} meta={metas.meta_gasto_exercicio} fina />}
+        <div className="balanco-linhas">
+          <div><span>Gasto natural do corpo</span><strong>{metas.gasto_basal ? `${num(metas.gasto_basal)} kcal` : 'não definido'}</strong></div>
+          <div>
+            <span>Atividade</span>
+            <strong>
+              {num(r.exercicio)} kcal
+              {editavel && r.exercicio > 0 && (
+                <button className="link mini-texto" onClick={() => salvarCampoDia({ calorias_exercicio: null })}> zerar</button>
+              )}
+            </strong>
+          </div>
+          <div className="balanco-total"><span>Total gasto</span><strong>{num((metas.gasto_basal || 0) + r.exercicio)} kcal</strong></div>
+          <div><span>Ingerido</span><strong>{num(r.kcal)} kcal</strong></div>
+        </div>
+        {metas.gasto_basal ? (() => {
+          const saldo = r.kcal - (metas.gasto_basal + r.exercicio)
+          const gramas = Math.round((Math.abs(saldo) / KCAL_POR_KG) * 1000)
+          return (
+            <div className={`balanco-resultado ${saldo < 0 ? 'deficit' : ''}`}>
+              <strong>{saldo <= 0 ? `Déficit de ${num(-saldo)} kcal` : `Superávit de ${num(saldo)} kcal`}</strong>
+              <span className="pequeno">
+                {saldo <= 0 ? `Equivale a cerca de ${gramas} g de gordura` : `Equivale a cerca de ${gramas} g a mais`}
+                {!r.kcal && ' (ainda sem refeições registradas hoje)'}
+              </span>
+            </div>
+          )
+        })() : (
+          <p className="suave pequeno">Defina seu gasto natural do corpo em Saúde &gt; Metas para ver o déficit do dia.</p>
         )}
       </section>
 

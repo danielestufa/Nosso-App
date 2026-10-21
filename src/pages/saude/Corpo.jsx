@@ -205,6 +205,11 @@ export default function Corpo({ pessoa, editavel }) {
       <section className="cartao">
         <div className="cartao-topo">
           <h3 className="cartao-titulo">Peso</h3>
+          {editavel && (
+            <button className="botao botao-pequeno botao-cheio" onClick={() => setFormAberto(true)}>
+              <IconeMaisSimples tamanho={15} /> Registrar peso
+            </button>
+          )}
           {atual.peso_kg != null && (
             <span className="pequeno">
               <strong>{num(atual.peso_kg, 1)} kg</strong>
