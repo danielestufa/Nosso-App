@@ -6,6 +6,29 @@ import { enviarNotificacao } from '../../lib/push'
 import { rotuloData } from '../../lib/saude'
 import { regrasDoDia, sugerirDia, situacao, textoRegra, TIPOS_REGRA } from '../../lib/desafios'
 
+function ProgressoMeta({ desafio, userId }) {
+  const [paginas, setPaginas] = useState(null)
+  const regra = desafio.regras.find((r) => r.tipo === 'leitura_paginas' && r.meta)
+  useEffect(() => {
+    if (!regra) return
+    supabase
+      .from('registros_leitura')
+      .select('paginas')
+      .eq('user_id', userId)
+      .gte('data', desafio.data_inicio)
+      .lte('data', desafio.data_fim)
+      .then(({ data }) => setPaginas((data || []).reduce((t, x) => t + x.paginas, 0)))
+  }, [desafio.id, userId])
+  if (!regra || paginas === null) return null
+  const meta = Number(regra.meta)
+  return (
+    <p className="pequeno">
+      Pelo app: <strong>{paginas}</strong> de {meta} páginas lidas desde o início do desafio
+      {paginas >= meta ? '. Meta batida! 🎉' : ''}
+    </p>
+  )
+}
+
 export default function CheckinDia({ desafio, eu, parceiro, data, aoSalvar, compacto = false }) {
   const avisar = useAviso()
   const regras = regrasDoDia(desafio.regras, data)
@@ -80,6 +103,7 @@ export default function CheckinDia({ desafio, eu, parceiro, data, aoSalvar, comp
         <ul className="regras-lista">
           {desafio.regras.map((r) => <li key={r.id} className="pequeno">{textoRegra(r)}</li>)}
         </ul>
+        <ProgressoMeta desafio={desafio} userId={eu.id} />
         <button className="botao botao-cheio botao-largo" onClick={concluirMeta} disabled={salvando}>
           Cumpri a meta
         </button>

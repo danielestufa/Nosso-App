@@ -11,6 +11,7 @@ import EmBreve from './pages/EmBreve'
 import Saude from './pages/saude/Saude'
 import Treinos from './pages/treinos/Treinos'
 import Desafios from './pages/desafios/Desafios'
+import Leitura from './pages/leitura/Leitura'
 import ConfiguracaoPendente from './pages/ConfiguracaoPendente'
 
 function Carregando() {
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="saude" element={<Saude />} />
         <Route path="treinos" element={<Treinos />} />
         <Route path="desafios" element={<Desafios />} />
+        <Route path="leitura" element={<Leitura />} />
         {secoes
           .filter((s) => s.fase && !s.pronta)
           .map((s) => (

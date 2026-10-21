@@ -9,6 +9,7 @@ import { IconeSino, IconeSeta } from '../components/Icones'
 import Barra from '../components/Barra'
 import { carregarDia, carregarMetas, resumir, dataISO, num, ouvirSaude } from '../lib/saude'
 import { carregarFicha, carregarTreinoDoDia, diaSemanaDe, ouvirTreinos } from '../lib/treinos'
+import { paginasNoDia, carregarMetaLeitura, capitulosNoDia, ouvirLeitura } from '../lib/leitura'
 import { carregarDesafios, estadoGeral, regrasDoDia, ouvirDesafios } from '../lib/desafios'
 import { Vidas } from './desafios/DetalheDesafio'
 
@@ -64,14 +65,15 @@ function ResumoPessoa({ pessoa, ehEu, pendente, versao }) {
   useEffect(() => {
     if (pendente) return
     const hoje = dataISO()
-    Promise.all([carregarDia(pessoa.id, hoje), carregarMetas(pessoa.id), carregarFicha(pessoa.id), carregarTreinoDoDia(pessoa.id, hoje)])
-      .then(([dia, metas, ficha, treino]) => {
+    Promise.all([carregarDia(pessoa.id, hoje), carregarMetas(pessoa.id), carregarFicha(pessoa.id), carregarTreinoDoDia(pessoa.id, hoje),
+      paginasNoDia(pessoa.id, hoje), carregarMetaLeitura(pessoa.id), capitulosNoDia(pessoa.id, hoje)])
+      .then(([dia, metas, ficha, treino, paginas, metaLeitura, capitulos]) => {
         const doDia = ficha[diaSemanaDe(hoje)]
         let textoTreino = 'Descanso'
         if (treino.treino?.concluido_em) textoTreino = 'Feito'
         else if (treino.treino) textoTreino = 'Treinando'
         else if (doDia?.itens?.length) textoTreino = doDia.titulo
-        setInfo({ r: resumir(dia), metas, treino: textoTreino })
+        setInfo({ r: resumir(dia), metas, treino: textoTreino, leitura: `${paginas}/${metaLeitura.paginas_dia} pág`, biblia: capitulos.length })
       })
       .catch(() => {})
   }, [pessoa?.id, pendente, versao])
@@ -112,7 +114,11 @@ function ResumoPessoa({ pessoa, ehEu, pendente, versao }) {
         </li>
         <li>
           <span>Leitura</span>
-          <span className="indicador-valor">em breve</span>
+          <span className="indicador-valor forte">{info ? info.leitura : '...'}</span>
+        </li>
+        <li>
+          <span>Bíblia</span>
+          <span className="indicador-valor forte">{info ? (info.biblia ? `${info.biblia} cap.` : 'Ainda não') : '...'}</span>
         </li>
       </ul>
     </Link>
@@ -131,6 +137,7 @@ export default function Inicio() {
   useEffect(() => ouvirSaude('inicio', () => setVersao((v) => v + 1)), [])
   useEffect(() => ouvirTreinos('inicio', () => setVersao((v) => v + 1), ['treinos_realizados']), [])
   useEffect(() => ouvirDesafios('inicio', () => setVersao((v) => v + 1)), [])
+  useEffect(() => ouvirLeitura('inicio', () => setVersao((v) => v + 1)), [])
 
   const [desafios, setDesafios] = useState([])
   useEffect(() => {

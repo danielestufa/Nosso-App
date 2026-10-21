@@ -2266,3 +2266,296 @@ a {
 .check-texto { text-align: left; }
 .dia-pendente-topo { text-transform: none; }
 .dia-pendente-topo > span:first-child::first-letter { text-transform: uppercase; }
+
+/* =========================================================
+   FASE 5 · LEITURA
+   ========================================================= */
+
+.leitura,
+.livros,
+.biblia,
+.detalhe-livro,
+.form-livro {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.livros, .biblia { gap: 18px; }
+
+/* Capas */
+.capa {
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--superficie-2);
+  border: 1px solid var(--linha);
+  aspect-ratio: 2 / 3;
+}
+
+.capa img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.capa-mini { width: 36px; }
+.capa-media { width: 72px; }
+.capa-grande { width: 120px; }
+
+.capa-vazia {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  text-align: center;
+  color: var(--suave);
+  font-size: 11px;
+  line-height: 1.25;
+  overflow: hidden;
+}
+
+.capa-vazia span {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Resumo */
+.resumo-leitura {
+  display: grid;
+  gap: 12px;
+}
+
+.estatisticas-leitura {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.estatisticas-leitura > div { display: flex; flex-direction: column; }
+.estatisticas-leitura .numero-grande { font-size: 26px; }
+
+@media (min-width: 560px) {
+  .resumo-leitura { grid-template-columns: 200px 1fr; }
+  .estatisticas-leitura { align-items: center; }
+}
+
+.meta-leitura input {
+  width: 70px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--linha);
+  background: var(--superficie-2);
+  text-align: center;
+  font-size: 16px;
+}
+
+/* Livro em leitura */
+.livro-lendo {
+  flex-direction: row;
+  gap: 14px;
+  cursor: pointer;
+  align-items: flex-start;
+  transition: border-color 0.15s;
+}
+
+.livro-lendo:hover { border-color: var(--linha-forte); }
+
+.livro-lendo-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.livro-lendo-info strong { font-size: 16px; line-height: 1.3; }
+.livro-lendo-info .cartao-topo { margin-top: 6px; }
+
+.lendo-junto {
+  margin-top: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--superficie-2);
+  align-self: flex-start;
+}
+
+.registrar-paginas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.registrar-paginas input {
+  width: 64px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--linha);
+  background: var(--superficie-2);
+  text-align: center;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 16px;
+  outline: none;
+}
+
+.registrar-paginas input:focus { border-color: var(--linha-forte); }
+
+/* Estante */
+.estante {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 14px 10px;
+}
+
+.livro-estante {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.livro-estante .capa { width: 100%; }
+
+.livro-estante-titulo {
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.estrelas { display: inline-flex; gap: 1px; }
+
+.estrelas button {
+  font-size: 16px;
+  line-height: 1;
+  color: var(--linha);
+  padding: 0 1px;
+}
+
+.estrelas button.cheia { color: var(--linha-forte); }
+.estrelas button:disabled { cursor: default; }
+.detalhe-livro .estrelas button { font-size: 26px; }
+
+/* Detalhe */
+.detalhe-livro-topo { display: flex; gap: 16px; align-items: flex-start; }
+
+.detalhe-livro-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.leitores { display: flex; flex-direction: column; gap: 10px; }
+
+.leitor {
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--superficie-2);
+}
+
+.historico-leitura {
+  display: grid !important;
+  grid-template-columns: 1fr auto auto !important;
+  text-transform: none;
+}
+
+.historico-leitura > span:first-child::first-letter { text-transform: uppercase; }
+
+/* Formulário */
+.capa-escolher {
+  width: 120px;
+  aspect-ratio: 2 / 3;
+  border-radius: 10px;
+  border: 1.5px dashed var(--linha-forte);
+  overflow: hidden;
+  align-self: center;
+}
+
+.capa-escolher img { width: 100%; height: 100%; object-fit: cover; }
+.form-livro-campos { display: flex; flex-direction: column; gap: 12px; }
+
+/* Bíblia */
+.resumo-biblia {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
+.resumo-biblia .botao,
+.dias-biblia { grid-column: 1 / -1; }
+
+.sequencia {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.dias-biblia {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 4px;
+}
+
+.plano-biblia { gap: 10px; }
+
+.leitura-do-dia {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--superficie-2);
+}
+
+.leitura-texto {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.capitulos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+  gap: 6px;
+}
+
+.capitulo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 54px;
+  border-radius: 10px;
+  border: 1.5px solid var(--linha-forte);
+  background: var(--fundo);
+}
+
+.capitulo strong { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 16px; font-weight: 500; line-height: 1.1; }
+.capitulo .mini-texto { color: var(--suave); line-height: 1.1; }
+
+.capitulo.feito {
+  background: var(--inverso-fundo);
+  border-color: var(--inverso-fundo);
+  color: var(--inverso-texto);
+}
+
+.capitulo.feito .mini-texto { color: var(--inverso-suave); }
+.capitulos-lidos { margin-top: 10px; }
+.lidos-resumo { margin-top: 8px; line-height: 1.5; }
+
+.planos { display: grid; gap: 10px; }
+
+@media (min-width: 700px) {
+  .planos { grid-template-columns: 1fr 1fr; }
+}
+
+.plano-opcao { gap: 6px; align-items: flex-start; }
+.plano-opcao .botao { margin-top: 6px; }

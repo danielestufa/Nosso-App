@@ -18,7 +18,7 @@ export const secoes = [
     resumo: 'Desafios entre vocês e juntos, com vidas, ranking, aposta e prenda para quem recusar.',
   },
   {
-    rota: '/leitura', nome: 'Leitura', Icone: IconeLeitura, fase: 5,
+    rota: '/leitura', nome: 'Leitura', Icone: IconeLeitura, fase: 5, pronta: true,
     resumo: 'Livros, progresso diário, livro lido a dois e planos de leitura da Bíblia.',
   },
   {

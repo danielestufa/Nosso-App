@@ -1,5 +1,7 @@
 import { supabase } from './supabase'
 import { carregarDia, carregarMetas, resumir, dataISO, somarDias } from './saude'
+import { carregarMetaLeitura, paginasNoDia, capitulosNoDia } from './leitura'
+import { resumoCapitulos } from './biblia'
 
 export const TIPOS_REGRA = {
   sem_acucar: { nome: 'Sem açúcar', auto: true, temMeta: false },
@@ -7,8 +9,8 @@ export const TIPOS_REGRA = {
   calorias_max: { nome: 'Calorias até o limite', auto: true, temMeta: true, unidade: 'kcal', dica: 'Vazio = usa a meta de calorias de cada um' },
   treino: { nome: 'Treinar', auto: true, temMeta: false, dica: 'Conta o treino do dia concluído na aba Treinos' },
   passos: { nome: 'Passos', auto: true, temMeta: true, unidade: 'passos' },
-  leitura_paginas: { nome: 'Ler páginas', auto: false, temMeta: true, unidade: 'páginas' },
-  biblia: { nome: 'Leitura da Bíblia', auto: false, temMeta: false },
+  leitura_paginas: { nome: 'Ler páginas', auto: true, temMeta: true, unidade: 'páginas', dica: 'Vazio = usa a meta de páginas de cada um' },
+  biblia: { nome: 'Leitura da Bíblia', auto: true, temMeta: false, dica: 'Conta qualquer capítulo marcado na aba Leitura > Bíblia' },
   personalizada: { nome: 'Outra regra', auto: false, temMeta: false },
 }
 
@@ -156,6 +158,13 @@ export async function sugerirDia(userId, data, regras) {
       ? supabase.from('treinos_realizados').select('concluido_em').eq('user_id', userId).eq('data', data).maybeSingle()
       : null,
   ])
+  const precisaPaginas = regras.some((r) => r.tipo === 'leitura_paginas')
+  const precisaBiblia = regras.some((r) => r.tipo === 'biblia')
+  const [paginas, metaLeitura, capitulos] = await Promise.all([
+    precisaPaginas ? paginasNoDia(userId, data) : 0,
+    precisaPaginas ? carregarMetaLeitura(userId) : null,
+    precisaBiblia ? capitulosNoDia(userId, data) : [],
+  ])
   const r = dia ? resumir(dia) : null
   const resultado = {}
   for (const regra of regras) {
@@ -176,6 +185,13 @@ export async function sugerirDia(userId, data, regras) {
       const meta = Number(regra.meta || metas.passos)
       ok = Number(r.passos || 0) >= meta
       detalhe = `${Number(r.passos || 0).toLocaleString('pt-BR')} de ${meta.toLocaleString('pt-BR')} passos`
+    } else if (regra.tipo === 'leitura_paginas') {
+      const meta = Number(regra.meta || metaLeitura.paginas_dia)
+      ok = paginas >= meta
+      detalhe = `${paginas} de ${meta} páginas`
+    } else if (regra.tipo === 'biblia') {
+      ok = capitulos.length > 0
+      detalhe = ok ? resumoCapitulos(capitulos) : 'nenhum capítulo marcado'
     } else if (regra.tipo === 'treino') {
       ok = !!treino?.data?.concluido_em
       detalhe = ok ? 'treino concluído' : 'nenhum treino concluído'
