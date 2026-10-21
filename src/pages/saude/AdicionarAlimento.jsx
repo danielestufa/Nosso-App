@@ -194,6 +194,18 @@ export default function AdicionarAlimento({ userId, data, refeicaoInicial, aoFec
     setEtapa('busca')
   }
 
+  async function apagarAlimento(a) {
+    if (!confirm(`Apagar "${a.nome}" da lista de alimentos de vez? O que já foi registrado nos dias anteriores continua salvo.`)) return
+    const { error } = await supabase.from('alimentos').delete().eq('id', a.id)
+    if (error) return avisar('Não foi possível apagar. Rode o código novo no Supabase.')
+    limparCacheAlimentos()
+    await recarregar(true)
+    setRecentes((r) => r.filter((id) => id !== a.id))
+    avisar(`${a.nome} apagado da lista.`)
+    setEscolhido(null)
+    setEtapa('busca')
+  }
+
   function Linha({ a }) {
     return (
       <button className="alimento-linha" onClick={() => escolher(a)}>
@@ -322,6 +334,9 @@ export default function AdicionarAlimento({ userId, data, refeicaoInicial, aoFec
           </button>
           <button className="botao botao-texto botao-largo" onClick={() => setEtapa('editar')}>
             Corrigir valores deste alimento
+          </button>
+          <button className="botao botao-texto botao-largo" onClick={() => apagarAlimento(escolhido)}>
+            Apagar este alimento da lista
           </button>
         </div>
       )}
