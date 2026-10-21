@@ -12,6 +12,8 @@ import { carregarFicha, carregarTreinoDoDia, diaSemanaDe, ouvirTreinos } from '.
 import { paginasNoDia, carregarMetaLeitura, capitulosNoDia, ouvirLeitura } from '../lib/leitura'
 import { carregarDesafios, estadoGeral, regrasDoDia, ouvirDesafios } from '../lib/desafios'
 import { Vidas } from './desafios/DetalheDesafio'
+import { supabase as sb } from '../lib/supabase'
+import { brl } from '../lib/financas'
 
 const DATA_PADRAO = '2027-09-09'
 
@@ -139,6 +141,14 @@ export default function Inicio() {
   useEffect(() => ouvirDesafios('inicio', () => setVersao((v) => v + 1)), [])
   useEffect(() => ouvirLeitura('inicio', () => setVersao((v) => v + 1)), [])
 
+  const [contasVencendo, setContasVencendo] = useState([])
+  useEffect(() => {
+    const limite = new Date(Date.now() + 3 * 86400000)
+    const lim = `${limite.getFullYear()}-${String(limite.getMonth() + 1).padStart(2, '0')}-${String(limite.getDate()).padStart(2, '0')}`
+    sb.from('fin_contas_pagar').select('id, descricao, valor, vencimento, escopo').eq('pago', false).lte('vencimento', lim).order('vencimento')
+      .then(({ data }) => setContasVencendo(data || []))
+  }, [versao])
+
   const [desafios, setDesafios] = useState([])
   useEffect(() => {
     if (!parceiro?.nome) return
@@ -198,6 +208,17 @@ export default function Inicio() {
       )}
 
       <Contagem dataISO={dataCasamento} />
+
+      {contasVencendo.length > 0 && (
+        <Link to="/financas?aba=pagar" className="faixa faixa-contas">
+          <span>
+            {contasVencendo.length === 1
+              ? `${contasVencendo[0].descricao} (${brl(contasVencendo[0].valor)}) ${contasVencendo[0].vencimento < dataISO() ? 'está atrasada' : 'vence nos próximos dias'}`
+              : `${contasVencendo.length} contas vencendo ou atrasadas · ${brl(contasVencendo.reduce((t, c) => t + Number(c.valor), 0))}`}
+          </span>
+          <IconeSeta tamanho={16} />
+        </Link>
+      )}
 
       <section className="bloco">
         <h2 className="titulo-bloco">Hoje</h2>

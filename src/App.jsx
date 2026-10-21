@@ -12,6 +12,7 @@ import Saude from './pages/saude/Saude'
 import Treinos from './pages/treinos/Treinos'
 import Desafios from './pages/desafios/Desafios'
 import Leitura from './pages/leitura/Leitura'
+import Financas from './pages/financas/Financas'
 import ConfiguracaoPendente from './pages/ConfiguracaoPendente'
 
 function Carregando() {
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="treinos" element={<Treinos />} />
         <Route path="desafios" element={<Desafios />} />
         <Route path="leitura" element={<Leitura />} />
+        <Route path="financas" element={<Financas />} />
         {secoes
           .filter((s) => s.fase && !s.pronta)
           .map((s) => (

@@ -2559,3 +2559,326 @@ a {
 
 .plano-opcao { gap: 6px; align-items: flex-start; }
 .plano-opcao .botao { margin-top: 6px; }
+
+/* =========================================================
+   FASE 6 · FINANÇAS
+   ========================================================= */
+
+.financas,
+.fin-resumo,
+.fin-lancamentos,
+.fin-contas,
+.fin-pagar,
+.fin-caixinhas,
+.fin-acertos,
+.detalhe-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.abas-rolagem {
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+.abas-rolagem::-webkit-scrollbar { display: none; }
+.abas-rolagem button { flex-shrink: 0; position: relative; }
+
+.ponto-aviso {
+  position: absolute;
+  top: 8px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--linha-forte);
+}
+
+.segmentos-3 { grid-template-columns: repeat(3, 1fr); }
+.segmentos-3 button { font-size: 13px; }
+
+/* Números do topo */
+.fin-numeros {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.fin-numero {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+}
+
+.fin-numero strong {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.fin-numero.destaque {
+  grid-column: 1 / -1;
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  border-color: var(--inverso-fundo);
+  padding: 20px;
+}
+
+.fin-numero.destaque .rotulo { color: var(--inverso-suave); }
+.fin-numero.destaque strong { font-size: 32px; }
+
+@media (min-width: 900px) {
+  .fin-numeros { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+  .fin-numero.destaque { grid-column: auto; }
+}
+
+.fin-acerto {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  border-color: var(--linha-forte);
+}
+
+.categorias-lista { display: flex; flex-direction: column; gap: 12px; }
+.categoria-linha { display: flex; flex-direction: column; gap: 0; }
+.categoria-linha.estourou .cartao-topo strong { text-decoration: underline; text-underline-offset: 3px; }
+.sem-orcamento .barra-cheia { background: var(--suave); }
+
+.atrasada { color: var(--texto) !important; font-weight: 600; }
+
+/* Entradas de valor */
+.entrada-valor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid var(--linha);
+  background: var(--superficie-2);
+}
+
+.entrada-valor:focus-within { border-color: var(--linha-forte); }
+.entrada-valor > span { color: var(--suave); font-size: 15px; }
+
+.campo .entrada-valor input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+}
+
+.campo-valor .entrada-valor { height: 60px; }
+.campo-valor .entrada-valor input { font-size: 26px; }
+.entrada-valor.pequena { height: 38px; padding: 0 10px; }
+.entrada-valor.pequena input { font-size: 15px; width: 100%; border: none; background: transparent; outline: none; font-family: 'Geist Mono', ui-monospace, monospace; }
+
+.caixa-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--superficie-2);
+}
+
+.caixa-opcoes .entrada-valor,
+.caixa-opcoes .campo input,
+.caixa-opcoes .segmentos { background: var(--fundo); }
+
+.lista-orcamentos { display: flex; flex-direction: column; }
+
+.orcamento-linha {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--linha);
+  font-size: 14px;
+}
+
+/* Lançamentos */
+.dia-lancamentos { display: flex; flex-direction: column; gap: 4px; }
+.dia-rotulo::first-letter { text-transform: uppercase; }
+.lista-lancamentos { list-style: none; display: flex; flex-direction: column; }
+
+.lancamento {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 2px;
+  border-top: 1px solid var(--linha);
+}
+
+.lancamento:first-child { border-top: none; }
+.fin-lancamentos .lancamento { cursor: pointer; }
+.lancamento > strong, .valor-coluna strong { font-family: 'Geist Mono', ui-monospace, monospace; font-weight: 500; font-size: 14px; white-space: nowrap; }
+
+.valor-coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.valor-positivo { color: var(--texto); }
+.valor-positivo::before { content: ''; }
+.valor-negativo { color: var(--texto); }
+
+.texto-botao { text-align: left; }
+.valor-coluna.texto-botao { text-align: right; }
+.total-linha { padding-top: 10px; border-top: 1px solid var(--linha-forte); }
+
+.acoes-conta { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+.conta-atrasada { border-color: var(--linha-forte); border-width: 1.5px; }
+
+/* Meses escolhidos */
+.meses-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+  gap: 6px;
+}
+
+.mes-opcao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7px 0;
+  border-radius: 10px;
+  border: 1px solid var(--linha);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.mes-opcao .mini-texto { color: var(--suave); font-weight: 400; }
+
+.mes-opcao.ativo {
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  border-color: var(--inverso-fundo);
+}
+
+.mes-opcao.ativo .mini-texto { color: var(--inverso-suave); }
+
+.lista-parcelas { list-style: none; margin-top: 10px; }
+
+.lista-parcelas li {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+/* Previsão */
+.previsao {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+  align-items: end;
+  height: 150px;
+  margin-top: 6px;
+}
+
+.previsao-mes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+}
+
+.previsao-valor {
+  height: 16px;
+  white-space: nowrap;
+  font-size: 9px;
+  color: var(--suave);
+  overflow: visible;
+}
+
+.previsao-barras {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+}
+
+.previsao-barra { width: 100%; }
+.previsao-barra.faturas { background: var(--linha-forte); border-radius: 0; }
+
+.previsao-barra.contas {
+  background: repeating-linear-gradient(-45deg, var(--linha-forte) 0 1.5px, transparent 1.5px 4px);
+  border: 1px solid var(--linha-forte);
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+}
+
+.previsao-barras > .previsao-barra.faturas:last-child { border-radius: 3px 3px 0 0; }
+
+@media (max-width: 480px) {
+  .previsao-valor { display: none; }
+}
+
+/* Caixinhas */
+.caixinha { gap: 8px; }
+
+.barra-grossa {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--superficie-2);
+  overflow: hidden;
+}
+
+.barra-grossa > div { height: 100%; background: var(--linha-forte); border-radius: 999px; }
+.historico-caixinha { margin-top: 18px; }
+
+/* Acertos */
+.resultado-zerado { background: var(--superficie-2); color: var(--texto); }
+.resultado-zerado .rotulo { color: var(--suave); }
+
+.botao-claro {
+  align-self: flex-start;
+  margin-top: 8px;
+  background: var(--inverso-texto);
+  color: var(--inverso-fundo);
+  border-color: var(--inverso-texto);
+}
+
+/* Botão flutuante */
+.botao-flutuante {
+  position: fixed;
+  right: 18px;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  z-index: 35;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--inverso-fundo);
+  color: var(--inverso-texto);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sombra);
+}
+
+@media (min-width: 900px) {
+  .botao-flutuante { right: 40px; bottom: 40px; }
+}
+
+.faixa-contas { border-style: solid; }
+
+.navegar-data-rotulo { text-transform: none; }
+.navegar-data-rotulo::first-letter { text-transform: uppercase; }

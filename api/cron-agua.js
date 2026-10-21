@@ -22,7 +22,8 @@ export default async function handler(req, res) {
     const db = admin()
 
     const treinos = await lembrarTreinos(db, hora, hoje, br.getUTCDay())
-    if (hora < 9 || hora > 21) return res.status(200).json({ treinos, agua: 'fora do horário' })
+    const contas = hora === 9 ? await lembrarContas(db, hoje) : []
+    if (hora < 9 || hora > 21) return res.status(200).json({ treinos, contas, agua: 'fora do horário' })
 
     const { data: perfis } = await db.from('profiles').select('id, nome')
     const { data: metas } = await db.from('metas_saude').select('user_id, agua_ml, lembrete_agua_horas')
@@ -87,7 +88,7 @@ export default async function handler(req, res) {
       resultado.push({ pessoa: pessoa.nome, horasSem: h })
     }
 
-    return res.status(200).json({ treinos, agua: resultado })
+    return res.status(200).json({ treinos, contas, agua: resultado })
   } catch (e) {
     console.error(e)
     return res.status(500).json({ erro: e.message })
@@ -128,4 +129,31 @@ async function lembrarTreinos(db, hora, hoje, diaSemana) {
     avisados.push(c.user_id)
   }
   return avisados
+}
+
+// Às 9h: contas a pagar que vencem hoje ou amanhã
+async function lembrarContas(db, hoje) {
+  const amanha = new Date(`${hoje}T12:00:00Z`)
+  amanha.setUTCDate(amanha.getUTCDate() + 1)
+  const ate = amanha.toISOString().slice(0, 10)
+  const { data: contas } = await db
+    .from('fin_contas_pagar')
+    .select('id, user_id, escopo, descricao, valor, vencimento')
+    .eq('pago', false)
+    .gte('vencimento', hoje)
+    .lte('vencimento', ate)
+  if (!contas?.length) return []
+  const { data: perfis } = await db.from('profiles').select('id, nome')
+  const todos = (perfis || []).filter((p) => p.nome).map((p) => p.id)
+  const fmt = (v) => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  for (const c of contas) {
+    const para = c.escopo === 'casal' ? todos : [c.user_id]
+    await enviarPush(para, {
+      titulo: c.vencimento === hoje ? 'Conta vence hoje' : 'Conta vence amanhã',
+      corpo: `${c.descricao}: ${fmt(c.valor)}`,
+      url: '/financas?aba=pagar',
+      tag: `conta-${c.id}`,
+    })
+  }
+  return contas.map((c) => c.id)
 }

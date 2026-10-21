@@ -22,7 +22,7 @@ export const secoes = [
     resumo: 'Livros, progresso diário, livro lido a dois e planos de leitura da Bíblia.',
   },
   {
-    rota: '/financas', nome: 'Finanças', Icone: IconeFinancas, fase: 6,
+    rota: '/financas', nome: 'Finanças', Icone: IconeFinancas, fase: 6, pronta: true,
     resumo: 'Finanças pessoais e compartilhadas, contas, cartões, parcelas, caixinhas e quem deve para quem.',
   },
   {
